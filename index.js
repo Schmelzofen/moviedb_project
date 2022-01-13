@@ -2,7 +2,6 @@ const { default: axios } = require('axios');
 const express = require('express');
 const app = express();
 const PORT = 3000
-
 const genres = require("./genres.json")
 
 function logReq(req, res, next) {
@@ -12,6 +11,7 @@ function logReq(req, res, next) {
 
 app.set('view engine', 'ejs');
 app.use(logReq)
+app.use(express.urlencoded())
 app.use(express.static(__dirname + '/public'))
 
 /* 
@@ -33,6 +33,9 @@ app.get("/", (req, res) => {
                 genres,
             })
         })
+    function showHello() {
+        console.log(inputField.value)
+    }
 })
 
 app.get("/movie/:id", (req, res) => {
@@ -61,5 +64,18 @@ app.get("/movie/genre/:id", (req, res) => {
             })
         })
 })
+
+app.post('/search', function (req, res) {
+    const query = req.body.search[0].replace(/\s/g, '+')
+    console.log(query)
+    axios(`https://api.themoviedb.org/3/search/movie?api_key=4d4d2fb5edb26b269c0108ed712239f9&language=de-de&query=${query}&page=1&include_adult=false`)
+        .then((response) => {
+            const movieArray = response.data
+            res.render("pages/index", {
+                movieArray: movieArray.results,
+                genres,
+            })
+        })
+});
 
 app.listen(PORT, () => console.log('Server listening on port: ' + PORT));
