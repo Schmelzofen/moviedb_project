@@ -1,0 +1,6 @@
+<% data.forEach(movie => { %>
+    <div class="movie">
+        <img src="https://image.tmdb.org/t/p/w200/<%- movie.poster_path%>" alt="">
+        <h1><a href="movie/<%- movie.id%>"><%- movie.title %></a></h1>
+        <%})%>
+    </div>
